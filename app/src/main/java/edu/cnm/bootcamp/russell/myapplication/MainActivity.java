@@ -1,0 +1,30 @@
+package edu.cnm.bootcamp.russell.myapplication;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button btnMainActivity = (Button)findViewById(R.id.btnMainActivity);
+        btnMainActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchAppActivity();
+            }
+        });
+    }
+
+    private void launchAppActivity() {
+        Intent intent = new Intent(this, AppActivity.class);
+        startActivity(intent);
+        finish();
+    }
+}
