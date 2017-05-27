@@ -27,4 +27,32 @@ public class Image {
 
     @SerializedName("score")
     int score;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public long getDatetime() {
+        return datetime;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public int getScore() {
+        return score;
+    }
 }

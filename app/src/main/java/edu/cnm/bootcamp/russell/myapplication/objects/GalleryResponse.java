@@ -17,4 +17,16 @@ public class GalleryResponse {
 
     @SerializedName("data")
     List<Image> data;
+
+    public boolean getSuccess() {
+        return success;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public List<Image> getData() {
+        return data;
+    }
 }

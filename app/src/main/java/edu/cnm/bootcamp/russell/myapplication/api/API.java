@@ -1,9 +1,11 @@
 package edu.cnm.bootcamp.russell.myapplication.api;
 
+import edu.cnm.bootcamp.russell.myapplication.objects.GalleryResponse;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Single;
 
 /**
  * Created by russell on 5/27/17.
@@ -21,5 +23,9 @@ public class API {
                 .client(httpClient.build())
                 .build();
         mService = retrofit.create(ImgurService.class);
+    }
+
+    public static Single<GalleryResponse> subredditGallery(String subreddit) {
+        return mService.subredditGallery(subreddit, "time", "week", 0);
     }
 }
