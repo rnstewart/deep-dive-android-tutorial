@@ -6,11 +6,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.List;
+
 import edu.cnm.bootcamp.russell.myapplication.R;
+import edu.cnm.bootcamp.russell.myapplication.adapters.ImageListAdapter;
+import edu.cnm.bootcamp.russell.myapplication.api.API;
+import edu.cnm.bootcamp.russell.myapplication.objects.GalleryResponse;
+import edu.cnm.bootcamp.russell.myapplication.objects.Image;
+import rx.SingleSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,20 +74,29 @@ public class ListFragment extends Fragment {
     public void onActivityCreated (Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        String[] strings = new String[]{
-                "First",
-                "Second",
-                "Third",
-                "Fourth"
-        };
+        API.subredditGallery("pics")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleSubscriber<GalleryResponse>(){
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_list_item_1,
-                strings
-        );
+                    @Override
+                    public void onSuccess(GalleryResponse value) {
+                        List<Image> data = value.getData();
+                        if (data != null) {
+                            ImageListAdapter adapter = new ImageListAdapter(
+                                    getContext(),
+                                    data
+                            );
+                            mListView.setAdapter(adapter);
+                        }
+                    }
 
-        mListView.setAdapter(adapter);
+                    @Override
+                    public void onError(Throwable error) {
+                        error.printStackTrace();
+                    }
+                });
+
         mBtnRemoveFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
