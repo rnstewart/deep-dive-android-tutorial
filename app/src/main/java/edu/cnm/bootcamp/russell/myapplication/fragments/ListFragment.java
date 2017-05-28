@@ -84,7 +84,7 @@ public class ListFragment extends Fragment {
                         List<Image> data = value.getData();
                         if (data != null) {
                             ImageListAdapter adapter = new ImageListAdapter(
-                                    getContext(),
+                                    getActivity(),
                                     data
                             );
                             mListView.setAdapter(adapter);

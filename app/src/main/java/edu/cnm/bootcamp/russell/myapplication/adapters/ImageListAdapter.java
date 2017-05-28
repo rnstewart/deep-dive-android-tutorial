@@ -1,10 +1,13 @@
 package edu.cnm.bootcamp.russell.myapplication.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -49,6 +52,22 @@ public class ImageListAdapter extends BaseAdapter {
         Image image = (Image)getItem(position);
         TextView txtImageTitle = (TextView)convertView.findViewById(R.id.txtImageTitle);
         txtImageTitle.setText(image.getTitle());
+
+        ImageView imageView = (ImageView)convertView.findViewById(R.id.image);
+        Bitmap bitmap = image.getDownloadedImage(mContext);
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+        }
+        else {
+            if (mContext instanceof Activity) {
+                image.downloadImage((Activity) mContext, new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        }
 
         return convertView;
     }

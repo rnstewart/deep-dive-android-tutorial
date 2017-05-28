@@ -1,6 +1,8 @@
 package edu.cnm.bootcamp.russell.myapplication.objects;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -89,7 +91,8 @@ public class Image {
             Single.create(new Single.OnSubscribe<Boolean>() {
                 @Override
                 public void call(SingleSubscriber<? super Boolean> singleSubscriber) {
-                    FilesystemMethods.downloadFile(activity, getImageURL());
+                    boolean success = FilesystemMethods.downloadFile(activity, getImageURL());
+                    singleSubscriber.onSuccess(success);
                 }
             })
                     .subscribeOn(Schedulers.io())
@@ -97,7 +100,7 @@ public class Image {
                     .subscribe(new Action1<Boolean>() {
                                    @Override
                                    public void call(Boolean success) {
-                                       if (callback != null) {
+                                       if (callback != null && success) {
                                            activity.runOnUiThread(callback);
                                        }
                                    }
@@ -105,9 +108,13 @@ public class Image {
                             new Action1<Throwable>() {
                                 @Override
                                 public void call(Throwable throwable) {
-
+                                    throwable.printStackTrace();
                                 }
                             });
         }
+    }
+
+    public Bitmap getDownloadedImage(Context context) {
+        return FilesystemMethods.getDownloadedImage(context, getImageURL());
     }
 }

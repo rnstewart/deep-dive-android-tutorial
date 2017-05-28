@@ -64,7 +64,7 @@ public class FilesystemMethods {
         return success;
     }
 
-    public Bitmap getDownloadedImage(Context context, String url) {
+    public static Bitmap getDownloadedImage(Context context, String url) {
         Bitmap bitmap = null;
 
         if (url != null && url.indexOf("/") > 0) {
@@ -92,7 +92,7 @@ public class FilesystemMethods {
                 }
             }
         }
-        
+
         return bitmap;
     }
 }
