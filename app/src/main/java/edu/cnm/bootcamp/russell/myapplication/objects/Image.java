@@ -50,6 +50,20 @@ public class Image {
     @SerializedName("in_gallery")
     boolean in_gallery;
 
+    public Image(Cursor cursor) {
+        if (cursor != null) {
+            id = cursor.getString(cursor.getColumnIndex(TableImages.COL_ID));
+            title = cursor.getString(cursor.getColumnIndex(TableImages.COL_TITLE));
+            description = cursor.getString(cursor.getColumnIndex(TableImages.COL_DESCRIPTION));
+            link = cursor.getString(cursor.getColumnIndex(TableImages.COL_LINK));
+            datetime = cursor.getLong(cursor.getColumnIndex(TableImages.COL_DATETIME));
+            views = cursor.getInt(cursor.getColumnIndex(TableImages.COL_VIEWS));
+            score = cursor.getInt(cursor.getColumnIndex(TableImages.COL_SCORE));
+            cover = cursor.getString(cursor.getColumnIndex(TableImages.COL_COVER));
+            in_gallery = (cursor.getInt(cursor.getColumnIndex(TableImages.COL_IN_GALLERY)) == 1);
+        }
+    }
+
     public String getId() {
         return id;
     }
@@ -135,7 +149,7 @@ public class Image {
             values.put(TableImages.COL_VIEWS, views);
             values.put(TableImages.COL_SCORE, score);
             values.put(TableImages.COL_COVER, cover);
-            values.put(TableImages.COL_IN_GALLERY, in_gallery);
+            values.put(TableImages.COL_IN_GALLERY, in_gallery ? 1 : 0);
 
             String selection = TableImages.COL_ID + "=?";
             String[] selectionArgs = new String[]{String.valueOf(id)};
