@@ -68,16 +68,11 @@ public class ListFragment extends Fragment {
     public void onActivityCreated (Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        loadImages();
         APIMethods.getSubredditGallery(getActivity(), "pics", new Runnable() {
             @Override
             public void run() {
-                if (mAdapter == null) {
-                    mAdapter = new ImageCursorAdapter(getContext());
-                }
-                else {
-                    mAdapter.refresh();
-                }
-                mListView.setAdapter(mAdapter);
+                loadImages();
             }
         });
 
@@ -95,6 +90,16 @@ public class ListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void loadImages() {
+        if (mAdapter == null) {
+            mAdapter = new ImageCursorAdapter(getContext());
+        }
+        else {
+            mAdapter.refresh();
+        }
+        mListView.setAdapter(mAdapter);
     }
 
     /**
