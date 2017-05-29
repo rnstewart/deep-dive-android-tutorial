@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import edu.cnm.bootcamp.russell.myapplication.datatables.TableImages;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final int DB_VER = 1;
@@ -42,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 e.printStackTrace();
             }
         }
-        
+
         return mDatabase;
     }
 	
@@ -52,6 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onOpen(SQLiteDatabase db) {
+        db.execSQL(TableImages.CREATE);
 	}
 
 	@Override

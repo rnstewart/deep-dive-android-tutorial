@@ -1,11 +1,16 @@
 package edu.cnm.bootcamp.russell.myapplication.objects;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 
 import com.google.gson.annotations.SerializedName;
 
+import edu.cnm.bootcamp.russell.myapplication.database.DatabaseHelper;
+import edu.cnm.bootcamp.russell.myapplication.datatables.TableImages;
 import edu.cnm.bootcamp.russell.myapplication.utils.FilesystemMethods;
 import rx.Single;
 import rx.SingleSubscriber;
@@ -116,5 +121,44 @@ public class Image {
 
     public Bitmap getDownloadedImage(Context context) {
         return FilesystemMethods.getDownloadedImage(context, getImageURL());
+    }
+
+    public void saveToDB(Context context) {
+        SQLiteDatabase db = DatabaseHelper.getDatabase(context);
+        if (db != null) {
+            ContentValues values = new ContentValues();
+            values.put(TableImages.COL_ID, id);
+            values.put(TableImages.COL_TITLE, title);
+            values.put(TableImages.COL_DESCRIPTION, description);
+            values.put(TableImages.COL_LINK, link);
+            values.put(TableImages.COL_DATETIME, datetime);
+            values.put(TableImages.COL_VIEWS, views);
+            values.put(TableImages.COL_SCORE, score);
+            values.put(TableImages.COL_COVER, cover);
+            values.put(TableImages.COL_IN_GALLERY, in_gallery);
+
+            String selection = TableImages.COL_ID + "=?";
+            String[] selectionArgs = new String[]{String.valueOf(id)};
+            Cursor c = db.query(
+                    TableImages.NAME,
+                    new String[]{TableImages.COL_ID},
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null
+            );
+            boolean exists = false;
+            if (c != null) {
+                exists = (c.getCount() > 0);
+                c.close();
+            }
+            if (exists) {
+                db.update(TableImages.NAME, values, selection, selectionArgs);
+            }
+            else {
+                db.insert(TableImages.NAME, null, values);
+            }
+        }
     }
 }
