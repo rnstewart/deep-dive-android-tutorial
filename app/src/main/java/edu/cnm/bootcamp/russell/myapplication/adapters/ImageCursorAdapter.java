@@ -14,6 +14,11 @@ import android.widget.TextView;
 import edu.cnm.bootcamp.russell.myapplication.R;
 import edu.cnm.bootcamp.russell.myapplication.database.DatabaseMethods;
 import edu.cnm.bootcamp.russell.myapplication.objects.Image;
+import rx.Single;
+import rx.SingleSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by russell on 5/29/17.
@@ -33,28 +38,49 @@ public class ImageCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        Image image = new Image(cursor);
+        final Image image = new Image(cursor);
         TextView txtImageTitle = (TextView)view.findViewById(R.id.txtImageTitle);
         txtImageTitle.setText(image.getTitle());
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.image);
+        final ImageView imageView = (ImageView) view.findViewById(R.id.image);
         if (mFlingMode) {
             imageView.setImageBitmap(null);
         }
         else {
-            Bitmap bitmap = image.getDownloadedImage(mContext);
-            if (bitmap != null) {
-                imageView.setImageBitmap(bitmap);
-            } else {
-                if (mContext instanceof Activity) {
-                    image.downloadImage((Activity) mContext, new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyDataSetChanged();
-                        }
-                    });
+            Single.create(new Single.OnSubscribe<Bitmap>() {
+                @Override
+                public void call(SingleSubscriber<? super Bitmap> singleSubscriber) {
+                    Bitmap bitmap = image.getDownloadedImage(mContext);
+                    singleSubscriber.onSuccess(bitmap);
                 }
-            }
+            })
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Bitmap>() {
+                                   @Override
+                                   public void call(Bitmap bitmap) {
+                                       if (bitmap != null) {
+                                           if (imageView != null) {
+                                               imageView.setImageBitmap(bitmap);
+                                           }
+                                       } else {
+                                           if (mContext instanceof Activity) {
+                                               image.downloadImage((Activity) mContext, new Runnable() {
+                                                   @Override
+                                                   public void run() {
+                                                       notifyDataSetChanged();
+                                                   }
+                                               });
+                                           }
+                                       }
+                                   }
+                               },
+                            new Action1<Throwable>() {
+                                @Override
+                                public void call(Throwable throwable) {
+                                    throwable.printStackTrace();
+                                }
+                            });
         }
     }
 
