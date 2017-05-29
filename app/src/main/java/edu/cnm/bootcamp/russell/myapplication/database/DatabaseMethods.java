@@ -29,6 +29,7 @@ public class DatabaseMethods {
                         image.saveToDB(activity);
                     }
                 }
+                singleSubscriber.onSuccess(images != null);
             }
         })
                 .subscribeOn(Schedulers.computation())

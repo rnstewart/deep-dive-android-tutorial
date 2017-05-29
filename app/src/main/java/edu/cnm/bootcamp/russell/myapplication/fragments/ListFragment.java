@@ -9,16 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
-import java.util.List;
-
 import edu.cnm.bootcamp.russell.myapplication.R;
-import edu.cnm.bootcamp.russell.myapplication.adapters.ImageListAdapter;
-import edu.cnm.bootcamp.russell.myapplication.api.API;
-import edu.cnm.bootcamp.russell.myapplication.objects.GalleryResponse;
-import edu.cnm.bootcamp.russell.myapplication.objects.Image;
-import rx.SingleSubscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import edu.cnm.bootcamp.russell.myapplication.adapters.ImageCursorAdapter;
+import edu.cnm.bootcamp.russell.myapplication.api.APIMethods;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +22,7 @@ import rx.schedulers.Schedulers;
  * create an instance of this fragment.
  */
 public class ListFragment extends Fragment {
+    private ImageCursorAdapter mAdapter;
     private Button mBtnRemoveFragment;
     private OnFragmentInteractionListener mListener;
     private ListView mListView;
@@ -74,28 +68,18 @@ public class ListFragment extends Fragment {
     public void onActivityCreated (Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        API.subredditGallery("pics")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleSubscriber<GalleryResponse>(){
-
-                    @Override
-                    public void onSuccess(GalleryResponse value) {
-                        List<Image> data = value.getData();
-                        if (data != null) {
-                            ImageListAdapter adapter = new ImageListAdapter(
-                                    getActivity(),
-                                    data
-                            );
-                            mListView.setAdapter(adapter);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable error) {
-                        error.printStackTrace();
-                    }
-                });
+        APIMethods.getSubredditGallery(getActivity(), "pics", new Runnable() {
+            @Override
+            public void run() {
+                if (mAdapter == null) {
+                    mAdapter = new ImageCursorAdapter(getContext());
+                }
+                else {
+                    mAdapter.refresh();
+                }
+                mListView.setAdapter(mAdapter);
+            }
+        });
 
         mBtnRemoveFragment.setOnClickListener(new View.OnClickListener() {
             @Override
