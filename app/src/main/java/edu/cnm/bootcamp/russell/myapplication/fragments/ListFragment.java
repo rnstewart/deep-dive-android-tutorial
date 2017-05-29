@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -21,7 +22,7 @@ import edu.cnm.bootcamp.russell.myapplication.api.APIMethods;
  * Use the {@link ListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements AbsListView.OnScrollListener {
     private ImageCursorAdapter mAdapter;
     private Button mBtnRemoveFragment;
     private OnFragmentInteractionListener mListener;
@@ -49,6 +50,7 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         mListView = (ListView)view.findViewById(R.id.fragmentList);
+        mListView.setOnScrollListener(this);
         mBtnRemoveFragment = (Button)view.findViewById(R.id.btnRemoveFragment);
         return view;
     }
@@ -100,6 +102,18 @@ public class ListFragment extends Fragment {
             mAdapter.refresh();
         }
         mListView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (mAdapter != null) {
+            mAdapter.setFlingMode(scrollState == SCROLL_STATE_FLING);
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
     }
 
     /**

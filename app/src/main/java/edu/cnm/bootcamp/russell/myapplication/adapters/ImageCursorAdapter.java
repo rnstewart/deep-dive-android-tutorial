@@ -20,6 +20,8 @@ import edu.cnm.bootcamp.russell.myapplication.objects.Image;
  */
 
 public class ImageCursorAdapter extends CursorAdapter {
+    private boolean mFlingMode = false;
+
     public ImageCursorAdapter(Context context) {
         super(context, DatabaseMethods.getImages(context), FLAG_REGISTER_CONTENT_OBSERVER);
     }
@@ -35,21 +37,30 @@ public class ImageCursorAdapter extends CursorAdapter {
         TextView txtImageTitle = (TextView)view.findViewById(R.id.txtImageTitle);
         txtImageTitle.setText(image.getTitle());
 
-        ImageView imageView = (ImageView)view.findViewById(R.id.image);
-        Bitmap bitmap = image.getDownloadedImage(mContext);
-        if (bitmap != null) {
-            imageView.setImageBitmap(bitmap);
+        ImageView imageView = (ImageView) view.findViewById(R.id.image);
+        if (mFlingMode) {
+            imageView.setImageBitmap(null);
         }
         else {
-            if (mContext instanceof Activity) {
-                image.downloadImage((Activity) mContext, new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyDataSetChanged();
-                    }
-                });
+            Bitmap bitmap = image.getDownloadedImage(mContext);
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+            } else {
+                if (mContext instanceof Activity) {
+                    image.downloadImage((Activity) mContext, new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyDataSetChanged();
+                        }
+                    });
+                }
             }
         }
+    }
+
+    public void setFlingMode(boolean flingMode) {
+        mFlingMode = flingMode;
+        notifyDataSetChanged();
     }
 
     public void refresh() {
