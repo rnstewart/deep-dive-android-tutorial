@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 
 import com.google.gson.annotations.SerializedName;
 
+import edu.cnm.bootcamp.russell.myapplication.R;
 import edu.cnm.bootcamp.russell.myapplication.database.DatabaseHelper;
 import edu.cnm.bootcamp.russell.myapplication.datatables.TableImages;
 import edu.cnm.bootcamp.russell.myapplication.utils.FilesystemMethods;
@@ -134,7 +135,8 @@ public class Image {
     }
 
     public Bitmap getDownloadedImage(Context context) {
-        return FilesystemMethods.getDownloadedImage(context, getImageURL());
+        int height = context.getResources().getDimensionPixelSize(R.dimen.image_height);
+        return FilesystemMethods.getDownloadedImage(context, getImageURL(), height);
     }
 
     public void saveToDB(Context context) {

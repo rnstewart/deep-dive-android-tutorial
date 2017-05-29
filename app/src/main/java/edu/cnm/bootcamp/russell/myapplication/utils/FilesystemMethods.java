@@ -64,7 +64,7 @@ public class FilesystemMethods {
         return success;
     }
 
-    public static Bitmap getDownloadedImage(Context context, String url) {
+    public static Bitmap getDownloadedImage(Context context, String url, int height) {
         Bitmap bitmap = null;
 
         if (url != null && url.indexOf("/") > 0) {
@@ -80,8 +80,18 @@ public class FilesystemMethods {
                 }
 
                 if (file_stream != null) {
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inSampleSize = 1;
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+                    options.inSampleSize = calculateInSampleSize(options, height);
+                    options.inJustDecodeBounds = false;
                     BufferedInputStream buffer = new BufferedInputStream(file_stream);
-                    bitmap = BitmapFactory.decodeStream(buffer);
+                    try {
+                        bitmap = BitmapFactory.decodeStream(buffer);
+                    } catch (OutOfMemoryError e) {
+                        e.printStackTrace();
+                    }
 
                     try {
                         buffer.close();
@@ -94,5 +104,16 @@ public class FilesystemMethods {
         }
 
         return bitmap;
+    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqHeight) {
+        final int height = options.outHeight;
+        int inSampleSize = 1;
+
+        if (height > reqHeight) {
+            inSampleSize = Math.round((float) height / (float) reqHeight);
+        }
+
+        return inSampleSize;
     }
 }
