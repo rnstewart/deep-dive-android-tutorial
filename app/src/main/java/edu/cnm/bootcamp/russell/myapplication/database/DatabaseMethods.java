@@ -1,9 +1,13 @@
 package edu.cnm.bootcamp.russell.myapplication.database;
 
 import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import java.util.List;
 
+import edu.cnm.bootcamp.russell.myapplication.datatables.TableImages;
 import edu.cnm.bootcamp.russell.myapplication.objects.Image;
 import rx.Single;
 import rx.SingleSubscriber;
@@ -43,5 +47,23 @@ public class DatabaseMethods {
                                 throwable.printStackTrace();
                             }
                         });
+    }
+
+    public static Cursor getImages(Context context) {
+        Cursor c = null;
+        SQLiteDatabase db = DatabaseHelper.getDatabase(context);
+        if (db != null) {
+            c = db.query(
+                    TableImages.NAME,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+        }
+
+        return c;
     }
 }
