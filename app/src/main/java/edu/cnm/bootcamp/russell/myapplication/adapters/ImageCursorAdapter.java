@@ -85,8 +85,10 @@ public class ImageCursorAdapter extends CursorAdapter {
     }
 
     public void setFlingMode(boolean flingMode) {
-        mFlingMode = flingMode;
-        notifyDataSetChanged();
+        if (mFlingMode != flingMode) {
+            mFlingMode = flingMode;
+            notifyDataSetChanged();
+        }
     }
 
     public void refresh() {
