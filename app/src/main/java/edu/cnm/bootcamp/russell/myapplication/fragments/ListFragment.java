@@ -97,11 +97,11 @@ public class ListFragment extends Fragment implements AbsListView.OnScrollListen
     private void loadImages() {
         if (mAdapter == null) {
             mAdapter = new ImageCursorAdapter(getContext());
+            mListView.setAdapter(mAdapter);
         }
         else {
             mAdapter.refresh();
         }
-        mListView.setAdapter(mAdapter);
     }
 
     @Override
