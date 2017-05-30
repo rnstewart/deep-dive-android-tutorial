@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.support.v4.util.LruCache;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +27,33 @@ import rx.schedulers.Schedulers;
 
 public class ImageCursorAdapter extends CursorAdapter {
     private boolean mFlingMode = false;
+    private LruCache<Integer, Bitmap> mMemoryCache;
 
     public ImageCursorAdapter(Context context) {
         super(context, DatabaseMethods.getImages(context), FLAG_REGISTER_CONTENT_OBSERVER);
+        final int maxMemory = (int)(Runtime.getRuntime().maxMemory() / 1024);
+        final int cacheSize = maxMemory / 8;
+        mMemoryCache = new LruCache<Integer, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(Integer key, Bitmap bitmap) {
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+    }
+
+    protected void addBitmapToMemoryCache(int position, Bitmap bitmap) {
+        if (bitmap != null && mMemoryCache != null && mMemoryCache.get(position) == null) {
+            mMemoryCache.put(position, bitmap);
+        }
+    }
+
+    protected Bitmap getCachedBitmap(int position) {
+        Bitmap bitmap = null;
+        if (mMemoryCache != null) {
+            bitmap = mMemoryCache.get(position);
+        }
+
+        return bitmap;
     }
 
     @Override
@@ -43,10 +68,10 @@ public class ImageCursorAdapter extends CursorAdapter {
         txtImageTitle.setText(image.getTitle());
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.image);
-        if (mFlingMode) {
-            imageView.setImageBitmap(null);
-        }
-        else {
+        final int position = cursor.getPosition();
+        Bitmap bitmap = getCachedBitmap(position);
+        imageView.setImageBitmap(bitmap);
+        if (bitmap == null && !mFlingMode) {
             Single.create(new Single.OnSubscribe<Bitmap>() {
                 @Override
                 public void call(SingleSubscriber<? super Bitmap> singleSubscriber) {
@@ -60,6 +85,7 @@ public class ImageCursorAdapter extends CursorAdapter {
                                    @Override
                                    public void call(Bitmap bitmap) {
                                        if (bitmap != null) {
+                                           addBitmapToMemoryCache(position, bitmap);
                                            if (imageView != null) {
                                                imageView.setImageBitmap(bitmap);
                                            }
