@@ -88,7 +88,7 @@ public class FilesystemMethods {
                     options.inJustDecodeBounds = false;
                     BufferedInputStream buffer = new BufferedInputStream(file_stream);
                     try {
-                        bitmap = BitmapFactory.decodeStream(buffer);
+                        bitmap = BitmapFactory.decodeStream(buffer, null, options);
                     } catch (OutOfMemoryError e) {
                         e.printStackTrace();
                     }
