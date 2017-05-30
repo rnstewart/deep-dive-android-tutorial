@@ -94,6 +94,14 @@ public class ListFragment extends Fragment implements AbsListView.OnScrollListen
         mListener = null;
     }
 
+    @Override
+    public void onDestroy() {
+        if (mAdapter != null) {
+            mAdapter.close();
+        }
+        super.onDestroy();
+    }
+
     private void loadImages() {
         if (mAdapter == null) {
             mAdapter = new ImageCursorAdapter(getContext());
