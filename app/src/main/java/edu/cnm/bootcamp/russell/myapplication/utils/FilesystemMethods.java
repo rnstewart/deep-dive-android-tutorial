@@ -64,7 +64,7 @@ public class FilesystemMethods {
         return success;
     }
 
-    public static Bitmap getDownloadedImage(Context context, String url, int height) {
+    public static Bitmap getDownloadedImage(Context context, String url, int width) {
         Bitmap bitmap = null;
 
         if (url != null && url.indexOf("/") > 0) {
@@ -82,10 +82,12 @@ public class FilesystemMethods {
                 if (file_stream != null) {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 1;
-                    options.inJustDecodeBounds = true;
-                    BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-                    options.inSampleSize = calculateInSampleSize(options, height);
-                    options.inJustDecodeBounds = false;
+                    if (width > 0) {
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+                        options.inSampleSize = calculateInSampleSize(options, width);
+                        options.inJustDecodeBounds = false;
+                    }
                     BufferedInputStream buffer = new BufferedInputStream(file_stream);
                     try {
                         bitmap = BitmapFactory.decodeStream(buffer, null, options);
@@ -106,12 +108,12 @@ public class FilesystemMethods {
         return bitmap;
     }
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqHeight) {
-        final int height = options.outHeight;
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth) {
+        int width = options.outWidth;
         int inSampleSize = 1;
 
-        if (height > reqHeight) {
-            inSampleSize = Math.round((float) height / (float) reqHeight);
+        if (width > reqWidth) {
+            inSampleSize = Math.round((float) width / (float) reqWidth);
         }
 
         return inSampleSize;

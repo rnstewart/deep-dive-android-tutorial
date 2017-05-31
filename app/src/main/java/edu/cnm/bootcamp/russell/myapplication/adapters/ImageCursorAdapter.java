@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.support.v4.util.LruCache;
 import android.support.v4.widget.CursorAdapter;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +38,7 @@ public class ImageCursorAdapter extends CursorAdapter {
     private DecimalFormat mScoreFormat = new DecimalFormat("#,###,###");
     private boolean mFlingMode = false;
     private LruCache<Integer, Bitmap> mMemoryCache;
+    private int mImageWidth = -1;
 
     public ImageCursorAdapter(Context context) {
         super(context, DatabaseMethods.getImages(context), FLAG_REGISTER_CONTENT_OBSERVER);
@@ -46,6 +50,12 @@ public class ImageCursorAdapter extends CursorAdapter {
                 return bitmap.getByteCount() / 1024;
             }
         };
+
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        mImageWidth = size.x;
     }
 
     protected void addBitmapToMemoryCache(int position, Bitmap bitmap) {
@@ -89,7 +99,7 @@ public class ImageCursorAdapter extends CursorAdapter {
             Single.create(new Single.OnSubscribe<Bitmap>() {
                 @Override
                 public void call(SingleSubscriber<? super Bitmap> singleSubscriber) {
-                    Bitmap bitmap = image.getDownloadedImage(mContext);
+                    Bitmap bitmap = image.getDownloadedImage(mContext, mImageWidth);
                     singleSubscriber.onSuccess(bitmap);
                 }
             })
