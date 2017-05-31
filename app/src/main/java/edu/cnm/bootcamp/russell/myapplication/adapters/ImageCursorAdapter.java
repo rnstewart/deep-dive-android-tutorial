@@ -146,6 +146,10 @@ public class ImageCursorAdapter extends CursorAdapter {
         if (oldCursor != null) {
             oldCursor.close();
         }
+        if (mMemoryCache != null) {
+            mMemoryCache.evictAll();
+        }
+        notifyDataSetChanged();
     }
 
     public void close() {
