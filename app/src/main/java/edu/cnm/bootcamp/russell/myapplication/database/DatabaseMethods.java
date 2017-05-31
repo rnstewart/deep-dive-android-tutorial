@@ -61,7 +61,7 @@ public class DatabaseMethods {
                     null,
                     null,
                     null,
-                    null
+                    TableImages.COL_DATETIME + " DESC"
             );
         }
 
