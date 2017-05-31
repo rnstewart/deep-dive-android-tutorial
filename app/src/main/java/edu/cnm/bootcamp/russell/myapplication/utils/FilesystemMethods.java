@@ -82,12 +82,10 @@ public class FilesystemMethods {
                 if (file_stream != null) {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 1;
-                    if (width > 0) {
-                        options.inJustDecodeBounds = true;
-                        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-                        options.inSampleSize = calculateInSampleSize(options, width);
-                        options.inJustDecodeBounds = false;
-                    }
+                    options.inJustDecodeBounds = true;
+                    BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+                    options.inSampleSize = calculateInSampleSize(options, width);
+                    options.inJustDecodeBounds = false;
                     BufferedInputStream buffer = new BufferedInputStream(file_stream);
                     try {
                         bitmap = BitmapFactory.decodeStream(buffer, null, options);
