@@ -12,6 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import edu.cnm.bootcamp.russell.myapplication.R;
 import edu.cnm.bootcamp.russell.myapplication.database.DatabaseMethods;
 import edu.cnm.bootcamp.russell.myapplication.objects.Image;
@@ -26,6 +30,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class ImageCursorAdapter extends CursorAdapter {
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
     private boolean mFlingMode = false;
     private LruCache<Integer, Bitmap> mMemoryCache;
 
@@ -66,6 +71,13 @@ public class ImageCursorAdapter extends CursorAdapter {
         final Image image = new Image(cursor);
         TextView txtImageTitle = (TextView)view.findViewById(R.id.txtImageTitle);
         txtImageTitle.setText(image.getTitle());
+
+        TextView txtScore = (TextView)view.findViewById(R.id.txtScore);
+        txtScore.setText(String.valueOf(image.getScore()));
+
+        TextView txtDate = (TextView)view.findViewById(R.id.txtDate);
+        Date date = new Date(image.getDatetime() * 1000);
+        txtDate.setText(mDateFormat.format(date));
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.image);
         final int position = cursor.getPosition();

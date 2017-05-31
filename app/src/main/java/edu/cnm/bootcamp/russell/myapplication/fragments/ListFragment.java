@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import edu.cnm.bootcamp.russell.myapplication.R;
@@ -24,7 +23,6 @@ import edu.cnm.bootcamp.russell.myapplication.api.APIMethods;
  */
 public class ListFragment extends Fragment implements AbsListView.OnScrollListener {
     private ImageCursorAdapter mAdapter;
-    private Button mBtnRemoveFragment;
     private OnFragmentInteractionListener mListener;
     private ListView mListView;
 
@@ -51,7 +49,6 @@ public class ListFragment extends Fragment implements AbsListView.OnScrollListen
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         mListView = (ListView)view.findViewById(R.id.fragmentList);
         mListView.setOnScrollListener(this);
-        mBtnRemoveFragment = (Button)view.findViewById(R.id.btnRemoveFragment);
         return view;
     }
 
@@ -75,15 +72,6 @@ public class ListFragment extends Fragment implements AbsListView.OnScrollListen
             @Override
             public void run() {
                 loadImages();
-            }
-        });
-
-        mBtnRemoveFragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onCloseClicked();
-                }
             }
         });
     }

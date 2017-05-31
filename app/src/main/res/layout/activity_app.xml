@@ -5,16 +5,8 @@
     android:layout_height="match_parent"
     tools:context="edu.cnm.bootcamp.russell.myapplication.AppActivity">
 
-    <Button
-        android:id="@+id/btnLoadFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/load" />
-
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/btnLoadFragment" />
+        android:layout_height="match_parent" />
 </RelativeLayout>
