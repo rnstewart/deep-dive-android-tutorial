@@ -16,18 +16,16 @@
         android:layout_below="@+id/image"
         android:text="234"
         android:textColor="@android:color/black"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/txtImageTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/txtScore"
         android:layout_alignTop="@id/txtScore"
         android:layout_marginLeft="20dp"
         android:layout_toRightOf="@id/txtScore"
-        android:gravity="center_vertical"
         android:text="Title"
         android:textColor="@android:color/black" />
 

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -31,6 +32,7 @@ import rx.schedulers.Schedulers;
 
 public class ImageCursorAdapter extends CursorAdapter {
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+    private DecimalFormat mScoreFormat = new DecimalFormat("#,###,###");
     private boolean mFlingMode = false;
     private LruCache<Integer, Bitmap> mMemoryCache;
 
@@ -73,7 +75,7 @@ public class ImageCursorAdapter extends CursorAdapter {
         txtImageTitle.setText(image.getTitle());
 
         TextView txtScore = (TextView)view.findViewById(R.id.txtScore);
-        txtScore.setText(String.valueOf(image.getScore()));
+        txtScore.setText(mScoreFormat.format(image.getScore()));
 
         TextView txtDate = (TextView)view.findViewById(R.id.txtDate);
         Date date = new Date(image.getDatetime() * 1000);
