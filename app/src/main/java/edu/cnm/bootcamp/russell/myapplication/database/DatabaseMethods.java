@@ -50,15 +50,17 @@ public class DatabaseMethods {
                         });
     }
 
-    public static Cursor getImages(Context context) {
+    public static Cursor getImages(Context context, String subreddit) {
         Cursor c = null;
         SQLiteDatabase db = DatabaseHelper.getDatabase(context);
         if (db != null) {
+            String selection = TableImages.COL_SECTION + "=?";
+            String[] selectionArgs = new String[]{subreddit};
             c = db.query(
                     TableImages.NAME,
                     null,
-                    null,
-                    null,
+                    selection,
+                    selectionArgs,
                     null,
                     null,
                     TableImages.COL_DATETIME + " DESC"

@@ -34,14 +34,16 @@ import rx.schedulers.Schedulers;
  */
 
 public class ImageCursorAdapter extends CursorAdapter {
+    private String mSubreddit;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
     private DecimalFormat mScoreFormat = new DecimalFormat("#,###,###");
     private boolean mFlingMode = false;
     private LruCache<Integer, Bitmap> mMemoryCache;
     private int mImageWidth = -1;
 
-    public ImageCursorAdapter(Context context) {
-        super(context, DatabaseMethods.getImages(context), FLAG_REGISTER_CONTENT_OBSERVER);
+    public ImageCursorAdapter(Context context, String subreddit) {
+        super(context, DatabaseMethods.getImages(context, subreddit), FLAG_REGISTER_CONTENT_OBSERVER);
+        mSubreddit = subreddit;
         final int maxMemory = (int)(Runtime.getRuntime().maxMemory() / 1024);
         final int cacheSize = maxMemory / 8;
         mMemoryCache = new LruCache<Integer, Bitmap>(cacheSize) {
@@ -141,8 +143,13 @@ public class ImageCursorAdapter extends CursorAdapter {
         }
     }
 
+    public void setSubreddit(String subreddit) {
+        mSubreddit = subreddit;
+        refresh();
+    }
+
     public void refresh() {
-        Cursor oldCursor = swapCursor(DatabaseMethods.getImages(mContext));
+        Cursor oldCursor = swapCursor(DatabaseMethods.getImages(mContext, mSubreddit));
         if (oldCursor != null) {
             oldCursor.close();
         }

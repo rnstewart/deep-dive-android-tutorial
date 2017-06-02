@@ -15,6 +15,7 @@ public class TableImages {
     public static final String COL_VIEWS = "views";
     public static final String COL_SCORE = "score";
     public static final String COL_COVER = "cover";
+    public static final String COL_SECTION = "section";
     public static final String COL_IN_GALLERY = "in_gallery";
 
     public static final String CREATE = "CREATE TABLE IF NOT EXISTS "
@@ -28,5 +29,6 @@ public class TableImages {
             + COL_VIEWS + " int, "
             + COL_SCORE + " int, "
             + COL_COVER + " text, "
+            + COL_SECTION + " text,"
             + COL_IN_GALLERY + " int);";
 }

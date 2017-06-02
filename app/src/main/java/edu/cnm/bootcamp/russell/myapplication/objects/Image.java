@@ -35,6 +35,9 @@ public class Image {
     @SerializedName("link")
     String link;
 
+    @SerializedName("section")
+    String section;
+
     @SerializedName("datetime")
     long datetime;
 
@@ -149,6 +152,7 @@ public class Image {
             values.put(TableImages.COL_VIEWS, views);
             values.put(TableImages.COL_SCORE, score);
             values.put(TableImages.COL_COVER, cover);
+            values.put(TableImages.COL_SECTION, section);
             values.put(TableImages.COL_IN_GALLERY, in_gallery ? 1 : 0);
 
             String selection = TableImages.COL_ID + "=?";

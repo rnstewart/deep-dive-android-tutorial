@@ -22,6 +22,8 @@ import edu.cnm.bootcamp.russell.myapplication.api.APIMethods;
  * create an instance of this fragment.
  */
 public class ListFragment extends Fragment implements AbsListView.OnScrollListener {
+    private static final String ARG_SUBREDDIT = "subreddit";
+    private String mSubreddit;
     private ImageCursorAdapter mAdapter;
     private OnFragmentInteractionListener mListener;
     private ListView mListView;
@@ -36,11 +38,21 @@ public class ListFragment extends Fragment implements AbsListView.OnScrollListen
      *
      * @return A new instance of fragment ListFragment.
      */
-    public static ListFragment newInstance() {
+    public static ListFragment newInstance(String subreddit) {
         ListFragment fragment = new ListFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_SUBREDDIT, subreddit);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null) {
+            mSubreddit = args.getString(ARG_SUBREDDIT);
+        }
     }
 
     @Override
@@ -68,12 +80,7 @@ public class ListFragment extends Fragment implements AbsListView.OnScrollListen
         super.onActivityCreated(savedInstanceState);
 
         loadImages();
-        APIMethods.getSubredditGallery(getActivity(), "pics", new Runnable() {
-            @Override
-            public void run() {
-                loadImages();
-            }
-        });
+        getImages();
     }
 
     @Override
@@ -90,13 +97,27 @@ public class ListFragment extends Fragment implements AbsListView.OnScrollListen
         super.onDestroy();
     }
 
+    public void setSubreddit(String subreddit) {
+        mSubreddit = subreddit;
+        getImages();
+    }
+
+    private void getImages() {
+        APIMethods.getSubredditGallery(getActivity(), mSubreddit, new Runnable() {
+            @Override
+            public void run() {
+                loadImages();
+            }
+        });
+    }
+
     private void loadImages() {
         if (mAdapter == null) {
-            mAdapter = new ImageCursorAdapter(getContext());
+            mAdapter = new ImageCursorAdapter(getContext(), mSubreddit);
             mListView.setAdapter(mAdapter);
         }
         else {
-            mAdapter.refresh();
+            mAdapter.setSubreddit(mSubreddit);
         }
     }
 

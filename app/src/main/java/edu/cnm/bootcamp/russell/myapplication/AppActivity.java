@@ -19,7 +19,7 @@ public class AppActivity extends AppCompatActivity implements ListFragment.OnFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app);
-        loadFragment();
+        loadFragment("pics");
     }
 
     @Override
@@ -39,12 +39,15 @@ public class AppActivity extends AppCompatActivity implements ListFragment.OnFra
     protected void onNewIntent(Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_SEARCH)) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            if (mListFragment != null) {
+                mListFragment.setSubreddit(query);
+            }
         }
     }
 
-    private void loadFragment() {
+    private void loadFragment(String subreddit) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        mListFragment = ListFragment.newInstance();
+        mListFragment = ListFragment.newInstance(subreddit);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.fragmentContainer, mListFragment);
         fragmentTransaction.commit();
