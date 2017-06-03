@@ -9,11 +9,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import edu.cnm.bootcamp.russell.myapplication.fragments.ListFragment;
 
 public class AppActivity extends AppCompatActivity implements ListFragment.OnFragmentInteractionListener {
     ListFragment mListFragment;
+    MenuItem mSearchMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +29,8 @@ public class AppActivity extends AppCompatActivity implements ListFragment.OnFra
         getMenuInflater().inflate(R.menu.menu_app_activity, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        mSearchMenuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) mSearchMenuItem.getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName())
         );
@@ -42,6 +45,10 @@ public class AppActivity extends AppCompatActivity implements ListFragment.OnFra
             if (mListFragment != null) {
                 mListFragment.setSubreddit(query);
             }
+        }
+
+        if (mSearchMenuItem != null) {
+            mSearchMenuItem.collapseActionView();
         }
     }
 
