@@ -1,5 +1,6 @@
 package edu.cnm.bootcamp.russell.myapplication.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -118,6 +119,11 @@ public class ListFragment extends Fragment implements AbsListView.OnScrollListen
         }
         else {
             mAdapter.setSubreddit(mSubreddit);
+        }
+
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.setTitle("/r/" + mSubreddit);
         }
     }
 
