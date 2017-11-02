@@ -13,6 +13,6 @@ public class ImgurApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        API.init();
+        API.init(this);
     }
 }
